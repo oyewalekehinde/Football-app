@@ -1,4 +1,4 @@
-# live_scores
+# Football-app
 
 A new Flutter project.
 

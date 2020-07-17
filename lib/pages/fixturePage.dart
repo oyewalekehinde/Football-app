@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:live_scores/Viewmodels/fixtureViewModel.dart';
+import 'package:live_scores/webServices/fixtures.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -15,28 +16,80 @@ class MyHomePage extends StatelessWidget {
         itemCount: fixture.fixtureList.length,
         itemBuilder: (context, index) {
           final item = fixture.fixtureList[index];
-          return Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Container(
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Image.network(item.homeTeam['logo']),
-                  item.score['fulltime'] == null
-                      ? Text('null')
-                      : Text(item.score['fulltime']),
-                  Image.network(item.awayTeam['logo']),
-                ],
-              ),
-            ),
-          );
+          return fixture.fixtureList.isEmpty
+              ? CircularProgressIndicator()
+              : Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              item.league['country'] +
+                                  '-' +
+                                  item.league['name'],
+                            ),
+                            Container(
+                                height: 15,
+                                width: 15,
+                                child: Image.network(item.league['logo'])),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    height: 50,
+                                    width: 50,
+                                    child:
+                                        Image.network(item.homeTeam['logo'])),
+                                Text(item.homeTeam['team_name'])
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text(item.elapsed.toString()),
+                                Row(
+                                  children: <Widget>[
+                                    Text('${item.goalsHomeTeam} - '),
+                                    Text('${item.goalsAwayTeam}')
+                                  ],
+                                ),
+                                Text(item.statusShort),
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Container(
+                                    height: 50,
+                                    width: 50,
+                                    child:
+                                        Image.network(item.awayTeam['logo'])),
+                                Text(item.awayTeam['team_name'])
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text('${item.venue}' + '\t\t'),
+                            Text('${item.referee}')
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           print('Button Clicked');
           fixture.getFixtures();
+          //FixtureServices.getFixturesList();
         },
         child: Icon(Icons.add),
       ),
