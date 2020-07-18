@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:live_scores/Viewmodels/fixtureViewModel.dart';
+import 'package:live_scores/Viewmodels/liveScoreViewModel.dart';
+import 'package:live_scores/pages/LiveScorePage.dart';
 import 'package:live_scores/webServices/fixtures.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
-  @override
   Widget build(BuildContext context) {
     final fixture = Provider.of<FixtureViewModel>(context);
+   // final liveScore = Provider.of<LiveScoreViewModel>(context);
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add_box),
+              onPressed: () {
+               // liveScore.getLiveScores();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LiveScoreScreen()));
+              }),
+        ],
         title: Text('Football App'),
       ),
       body: ListView.builder(
@@ -89,6 +100,7 @@ class MyHomePage extends StatelessWidget {
         onPressed: () async {
           print('Button Clicked');
           fixture.getFixtures();
+
           //FixtureServices.getFixturesList();
         },
         child: Icon(Icons.add),
