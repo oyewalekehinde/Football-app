@@ -12,10 +12,10 @@ class LiveScoreScreen extends StatelessWidget {
         title: Text('live-Score'),
       ),
       body: liveScore.liveScoreList.isEmpty
-          ? Center(child: CircularProgressIndicator(
-            backgroundColor: Colors.black,
-            
-          ))
+          ? Center(
+              child: CircularProgressIndicator(
+              backgroundColor: Colors.black,
+            ))
           : ListView.builder(
               itemCount: liveScore.liveScoreList.length,
               itemBuilder: (context, index) {
@@ -24,73 +24,86 @@ class LiveScoreScreen extends StatelessWidget {
                   padding: EdgeInsets.all(8.0),
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => EventsScreen(
-                                events: item.events,
-                                homeTeam: item.homeTeam['team_id'],
-                                awayTeam: item.awayTeam['team_id'],
-                              )));
-                    },
-                    child: Container(
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                item.league['country'] +
-                                    '-' +
-                                    item.league['name'],
-                              ),
-                              Container(
-                                  height: 15,
-                                  width: 15,
-                                  child: Image.network(item.league['logo'])),
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Column(
-                                children: <Widget>[
-                                  Container(
-                                      height: 50,
-                                      width: 50,
-                                      child:
-                                          Image.network(item.homeTeam['logo'])),
-                                  Text(item.homeTeam['team_name'])
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Text(item.elapsed.toString()),
-                                  Row(
-                                    children: <Widget>[
-                                      Text('${item.goalsHomeTeam} - '),
-                                      Text('${item.goalsAwayTeam}')
-                                    ],
-                                  ),
-                                  Text(item.statusShort),
-                                ],
-                              ),
-                              Column(
-                                children: <Widget>[
-                                  Container(
-                                      height: 50,
-                                      width: 50,
-                                      child:
-                                          Image.network(item.awayTeam['logo'])),
-                                  Text(item.awayTeam['team_name'])
-                                ],
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                              Text('${item.venue}' + '\t\t'),
-                              Text('${item.referee}')
-                            ],
-                          ),
-                        ],
+                            print(item.events);
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EventsScreen(
+                                      events: item.events,
+                                      homeTeam: item.homeTeam['team_id'],
+                                      awayTeam: item.awayTeam['team_id'],
+                                      homeLogo: item.homeTeam['logo'],
+                                      awayLogo: item.awayTeam['logo'],
+                                      homeName: item.homeTeam['team_name'],
+                                      awayName: item.awayTeam['team_name'],
+                                      homeGoal: item.goalsHomeTeam,
+                                      awayGoal: item.goalsAwayTeam,
+                                      timeElapsed: item.elapsed,
+                                      status: item.statusShort,
+                                    )));
+                          },
+                        
+                    child: Card(
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  item.league['country'] +
+                                      '-' +
+                                      item.league['name'],
+                                ),
+                                Container(
+                                    height: 15,
+                                    width: 15,
+                                    child: Image.network(item.league['logo'])),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  children: <Widget>[
+                                    Container(
+                                        height: 50,
+                                        width: 50,
+                                        child: Image.network(
+                                            item.homeTeam['logo'])),
+                                    Text(item.homeTeam['team_name'])
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Text(item.elapsed.toString()),
+                                    Row(
+                                      children: <Widget>[
+                                        Text('${item.goalsHomeTeam} - '),
+                                        Text('${item.goalsAwayTeam}')
+                                      ],
+                                    ),
+                                    Text(item.statusShort),
+                                  ],
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    Container(
+                                        height: 50,
+                                        width: 50,
+                                        child: Image.network(
+                                            item.awayTeam['logo'])),
+                                    Text(item.awayTeam['team_name'])
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text('${item.venue}' + '\t\t'),
+                                Text('${item.referee}')
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),

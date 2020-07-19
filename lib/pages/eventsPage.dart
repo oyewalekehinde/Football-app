@@ -3,9 +3,28 @@ import 'package:timeline_tile/timeline_tile.dart';
 
 class EventsScreen extends StatelessWidget {
   final List events;
+  final String homeName;
+  final String awayName;
+  final String homeLogo;
+  final String awayLogo;
+  final String status;
+  final int timeElapsed;
+  final int homeGoal;
+  final int awayGoal;
   final int homeTeam;
   final int awayTeam;
-  EventsScreen({this.events, this.homeTeam, this.awayTeam});
+  EventsScreen(
+      {this.events,
+      this.homeTeam,
+      this.awayTeam,
+      this.homeName,
+      this.awayName,
+      this.awayGoal,
+      this.awayLogo,
+      this.homeGoal,
+      this.homeLogo,
+      this.timeElapsed,
+      this.status});
   Widget type(
       {String data,
       String playerName,
@@ -16,23 +35,43 @@ class EventsScreen extends StatelessWidget {
     switch (type) {
       case 'Goal':
         return Container(
-         
           child: Row(
             mainAxisAlignment: homeTeam == teamId
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
             children: <Widget>[
-              CircleAvatar(
-                minRadius: 10,
+            details == 'Normal Goal' || details == 'Penalty'
+                    ?   Image.asset(
+                details == 'Normal Goal'
+                    ? 'assets/images/goal.png'
+                    : 'assets/images/penalty.png',
+                height: 20,
+                width: 20,
+              ): Image.asset('assets/images/owngoal.png',
+               height: 20,
+                width: 20,),
+              SizedBox(
+                width: 10,
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Goal: ' + playerName),
-                  assistName == null
-                      ? Container()
-                      : Text('Assist: ' + assistName),
+                  RichText(
+                    text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: playerName + '\n',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      TextSpan(
+                        text: assistName != null ? assistName : '',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w200),
+                      ),
+                    ]),
+                  ),
                 ],
               ),
             ],
@@ -61,19 +100,25 @@ class EventsScreen extends StatelessWidget {
         break;
       case 'subst':
         return Container(
-        
           child: Row(
             mainAxisAlignment: homeTeam == teamId
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
             children: <Widget>[
-              Icon(Icons.time_to_leave),
+              Image.asset(
+                'assets/images/subst.png',
+                height: 20,
+                width: 20,
+              ),
+              SizedBox(
+                width: 10,
+              ),
               Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('Out: ' + playerName),
-                  assistName == null ? Container() : Text('In: ' + assistName),
+                  Text('In: ' + assistName),
                 ],
               ),
             ],
@@ -94,88 +139,100 @@ class EventsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: Container(
-        padding: EdgeInsets.all(16),
-        child: ListView.builder(
-            itemCount: this.events.length,
-            itemBuilder: (context, index) {
-              final list = this.events[index];
-              return TimelineTile(
-                indicatorStyle: IndicatorStyle(
-                  drawGap: true,
-                  width: 60,
-                  height: 40,
-                  indicator: Container(
-                    decoration: BoxDecoration(
-                        border: Border.fromBorderSide(
-                          BorderSide(color: Colors.grey),
-                        ),
-                        shape: BoxShape.circle),
-                    child: Center(
-                      child: Text(
-                        '${list['elapsed']}\'',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 100,
+              color: Colors.black12,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    
+                    children: <Widget>[
+                      Container(
+                          height: 50,
+                          width: 50,
+                          child: Image.network(homeLogo)),
+                      Text(homeName)
+                    ],
                   ),
-                ),
-                alignment: TimelineAlign.center,
-                rightChild: awayTeam == list['team_id']
-                    ? type(
-                        data: list['type'],
-                        playerName: list['player'],
-                        assistName: list['assist'],
-                        details: list['detail'])
-                    : Container(
-
-                        height: 80,
-                        width: 100,
+                  Column(
+                    children: <Widget>[
+                      Text('$timeElapsed'),
+                      Row(
+                        children: <Widget>[
+                          Text('$homeGoal - '),
+                          Text('$awayGoal')
+                        ],
                       ),
-                leftChild: homeTeam == list['team_id']
-                    ? type(
-                        data: list['type'],
-                        playerName: list['player'],
-                        assistName: list['assist'],
-                        details: list['detail'],
-                        teamId: list['team_id'])
-                    : Container(
-                        height: 80,
-                        width: 100,
+                      Text(status),
+                    ],
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                          height: 50,
+                          width: 50,
+                          child: Image.network(awayLogo)),
+                      Text(awayName)
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                  itemCount: this.events.length,
+                  itemBuilder: (context, index) {
+                    final list = this.events[index];
+                    return TimelineTile(
+                      indicatorStyle: IndicatorStyle(
+                        drawGap: true,
+                        width: 50,
+                        height: 40,
+                        indicator: Container(
+                          decoration: BoxDecoration(
+                              border: Border.fromBorderSide(
+                                BorderSide(color: Colors.grey),
+                              ),
+                              shape: BoxShape.circle),
+                          child: Center(
+                            child: Text(
+                              '${list['elapsed']}\'',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ),
                       ),
-              );
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Row(
-              //     children: <Widget>[
-              //       TimelineTile(
-              //           alignment: TimelineAlign.manual,
-              //           lineX: 0.1,
-              //           rightChild: Text('${list['elapsed']}\''),
-              //           leftChild: Text('${list['elapsed']}\'')),
-              //       list['elapsed_plus'] == null
-              //           ? Container()
-              //           : Text('+ ${list['elapsed_plus']}'),
-              //       Text('\tPlayer : ${list['player']}  '),
-              //       Text('${list['teamName']}  '),
-              //       list['assist'] == null
-              //           ? Container()
-              //           : Text('Assist : ${list['assist']}  '),
-              //       list['type'] == 'Goal'
-              //           ? Icon(Icons.score)
-              //           : Text('${list['type']}  '),
-              // list['detail'] == 'Red Card' ||
-              //         list['detail'] == 'Yellow Card'
-              //     ? Container(
-              //         height: 10,
-              //         width: 7,
-              //         color: list['detail'] == 'Red Card'
-              //             ? Colors.red
-              //             : Colors.yellow,
-              //       )
-              //           : Text('${list['detail']}  '),
-              //     ],
-              //   ),
-              // );
-            }),
+                      alignment: TimelineAlign.center,
+                      rightChild: awayTeam == list['team_id']
+                          ? type(
+                              data: list['type'],
+                              playerName: list['player'],
+                              assistName: list['assist'],
+                              details: list['detail'])
+                          : Container(
+                              height: 80,
+                              width: 100,
+                            ),
+                      leftChild: homeTeam == list['team_id']
+                          ? type(
+                              data: list['type'],
+                              playerName: list['player'],
+                              assistName: list['assist'],
+                              details: list['detail'],
+                              teamId: list['team_id'])
+                          : Container(
+                              height: 80,
+                              width: 100,
+                            ),
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:live_scores/Viewmodels/fixtureViewModel.dart';
-import 'package:live_scores/Viewmodels/liveScoreViewModel.dart';
 import 'package:live_scores/pages/LiveScorePage.dart';
-import 'package:live_scores/webServices/fixtures.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fixture = Provider.of<FixtureViewModel>(context);
-   // final liveScore = Provider.of<LiveScoreViewModel>(context);
+    // final liveScore = Provider.of<LiveScoreViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.add_box),
               onPressed: () {
-               // liveScore.getLiveScores();
+                // liveScore.getLiveScores();
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LiveScoreScreen()));
               }),
