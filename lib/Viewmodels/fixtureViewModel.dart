@@ -3,30 +3,18 @@ import 'package:live_scores/model/fixtures.dart';
 import 'package:live_scores/webServices/fixtures.dart';
 
 class FixtureViewModel extends ChangeNotifier {
-  List<FixtureModel> fixtureList = List<FixtureModel>();
+  List<Response> fixtureList = List<Response>();
 
   void getFixtures() async {
-    List<FixtureModel> fixtureItem = await FixtureServices.getFixturesList();
-    this.fixtureList = fixtureItem
-        .map((item) => FixtureModel(
-            fixtureId: item.fixtureId,
-            leagueId: item.leagueId,
-            league: item.league,
-            eventDate: item.eventDate,
-            eventTimeStamp: item.eventTimeStamp,
-            firstHalfStart: item.firstHalfStart,
-            secondHalfStart: item.secondHalfStart,
-            round: item.round,
-            status: item.status,
-            statusShort: item.statusShort,
-            elapsed: item.elapsed,
-            venue: item.venue,
-            referee: item.referee,
-            homeTeam: item.homeTeam,
-            awayTeam: item.awayTeam,
-            goalsHomeTeam: item.goalsHomeTeam,
-            goalsAwayTeam: item.goalsAwayTeam,
-            score: item.score))
+    FixtureModel fixtureItem = await FixtureServices.getFixturesList();
+    this.fixtureList = fixtureItem.response
+        .map((item) => Response(
+              fixture: item.fixture,
+              goals: item.goals,
+              league: item.league,
+              score: item.score,
+              teams: item.teams,
+            ))
         .toList();
     notifyListeners();
   }
